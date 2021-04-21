@@ -20,8 +20,8 @@ const App = () => {
 			write: false,
 			plugins: [unpkgPathPlugin()],
 		});
+
 		setCode(res.outputFiles[0].text);
-		//setCode(res.outputFiles[0].text);
 	};
 
 	const startService = async (): Promise<any> => {
