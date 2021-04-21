@@ -8,9 +8,16 @@ const App = () => {
 	const [input, setInput] = useState('');
 	const [code, setCode] = useState('');
 
-	const handleClick = () => {
+	const handleClick = async (): Promise<any> => {
 		if (!service.current) return;
-		console.log(service.current);
+
+		const res = await service.current.transform(input, {
+			loader: 'jsx',
+			target: 'es2015',
+		});
+
+		setCode(res.code);
+		setInput('');
 	};
 
 	const startService = async (): Promise<any> => {
