@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import * as esbuild from 'esbuild-wasm';
+import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 
 const App = () => {
 	const service = useRef<any>(null);
@@ -13,12 +14,14 @@ const App = () => {
 
 		if (!service.current) return;
 
-		const res = await service.current.transform(input, {
-			loader: 'jsx',
-			target: 'es2015',
+		const res = await service.current.build({
+			entryPoints: ['index.js'],
+			bundle: true,
+			write: false,
+			plugins: [unpkgPathPlugin()],
 		});
-
-		setCode(res.code);
+		setCode(res.outputFiles[0].text);
+		//setCode(res.outputFiles[0].text);
 	};
 
 	const startService = async (): Promise<any> => {
