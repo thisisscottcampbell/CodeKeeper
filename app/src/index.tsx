@@ -9,6 +9,8 @@ const App = () => {
 	const [code, setCode] = useState('');
 
 	const handleClick = async (): Promise<any> => {
+		setInput('');
+
 		if (!service.current) return;
 
 		const res = await service.current.transform(input, {
@@ -17,7 +19,6 @@ const App = () => {
 		});
 
 		setCode(res.code);
-		setInput('');
 	};
 
 	const startService = async (): Promise<any> => {
