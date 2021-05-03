@@ -40,6 +40,10 @@ const App = () => {
 		startService();
 	}, []);
 
+	const html = `
+		<script>${code}</script>
+	`;
+
 	return (
 		<div>
 			<textarea
@@ -50,7 +54,7 @@ const App = () => {
 				<button onClick={handleClick}>Submit</button>
 			</div>
 			<pre>{code}</pre>
-			<iframe src="/test.html" />
+			<iframe sandbox="allow-scripts" srcDoc={html} />
 		</div>
 	);
 };
