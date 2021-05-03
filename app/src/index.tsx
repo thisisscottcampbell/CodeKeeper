@@ -32,7 +32,7 @@ const App = () => {
 	const startService = async (): Promise<any> => {
 		service.current = await esbuild.startService({
 			worker: true,
-			wasmURL: '/esbuild.wasm',
+			wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
 		});
 	};
 
@@ -50,6 +50,7 @@ const App = () => {
 				<button onClick={handleClick}>Submit</button>
 			</div>
 			<pre>{code}</pre>
+			<iframe src="/test.html" />
 		</div>
 	);
 };
