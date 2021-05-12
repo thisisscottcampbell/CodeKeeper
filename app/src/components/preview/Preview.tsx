@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 
 interface PreviewProps {
-	userCode: string;
+	displayCode: string;
 }
 
 const html = `
@@ -24,13 +24,13 @@ const html = `
 </html>
 `;
 
-const Preview: React.FC<PreviewProps> = ({ userCode }) => {
+const Preview: React.FC<PreviewProps> = ({ displayCode }) => {
 	const iframe = useRef<any>(null);
 
 	useEffect(() => {
 		iframe.current.srcdoc = html;
-		iframe.current.contentWindow.postMessage(userCode, '*');
-	}, [userCode]);
+		iframe.current.contentWindow.postMessage(displayCode, '*');
+	}, [displayCode]);
 
 	return (
 		<div>
