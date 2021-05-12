@@ -6,7 +6,7 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 
 const App = () => {
 	const service = useRef<any>(null);
-
+	const iframe = useRef<any>(null);
 	const [input, setInput] = useState('');
 	const [code, setCode] = useState('');
 
@@ -26,7 +26,7 @@ const App = () => {
 			},
 		});
 
-		setCode(res.outputFiles[0].text);
+		iframe.current.contentWindow.postMessage(res.outputFiles[0].text, '*');
 	};
 
 	const startService = async (): Promise<any> => {
@@ -41,7 +41,15 @@ const App = () => {
 	}, []);
 
 	const html = `
-		<script>${code}</script>
+		<html>
+			<head></head>
+			<body>
+				<div id="root"></div>
+				<script>
+					window.addEventListener('message', e => eval(e.data),false)
+				</script>
+			</body>
+		</html>
 	`;
 
 	return (
@@ -53,8 +61,8 @@ const App = () => {
 			<div>
 				<button onClick={handleClick}>Submit</button>
 			</div>
-			<pre>{code}</pre>
-			<iframe sandbox="allow-scripts" srcDoc={html} />
+			<pre></pre>
+			<iframe ref={iframe} sandbox="allow-scripts" srcDoc={html} />
 		</div>
 	);
 };
