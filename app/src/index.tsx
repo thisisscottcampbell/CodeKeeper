@@ -3,17 +3,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/code-editor';
 
 const App = () => {
 	const service = useRef<any>(null);
 	const iframe = useRef<any>(null);
 	const [input, setInput] = useState('');
-	const [code, setCode] = useState('');
 
 	const handleClick = async (): Promise<any> => {
 		setInput('');
 
 		if (!service.current) return;
+
+		iframe.current.srcdoc = html;
 
 		const res = await service.current.build({
 			entryPoints: ['index.js'],
@@ -51,7 +53,8 @@ const App = () => {
 							eval(e.data);
 						} catch (err) {
 							const root = document.querySelector('#root');
-							root.innerHTML = '<div>' + err + '</div>'
+							root.innerHTML = '<div style="color: red"><h4>Runtime Error:</h4>' + err + '</div>'
+							console.err(err);s
 						}
 					},false)
 				</script>
@@ -61,6 +64,7 @@ const App = () => {
 
 	return (
 		<div>
+			<CodeEditor />
 			<textarea
 				value={input}
 				onChange={(e) => setInput(e.target.value)}
@@ -68,8 +72,12 @@ const App = () => {
 			<div>
 				<button onClick={handleClick}>Submit</button>
 			</div>
-			<pre></pre>
-			<iframe ref={iframe} sandbox="allow-scripts" srcDoc={html} />
+			<iframe
+				title="preview"
+				ref={iframe}
+				sandbox="allow-scripts"
+				srcDoc={html}
+			/>
 		</div>
 	);
 };
