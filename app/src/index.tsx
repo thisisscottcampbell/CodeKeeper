@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
+import Preview from './components/preview/Preview';
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
 import * as esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
@@ -7,18 +8,24 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 import CodeEditor from './components/code_editor/code-editor';
 
 const App = () => {
-	const service = useRef<any>(null);
-	const iframe = useRef<any>(null);
-	const [input, setInput] = useState('');
+	const isService = useRef<any>(null);
 
-	const handleClick = async (): Promise<any> => {
+	const [input, setInput] = useState('');
+	const [userCode, setUserCode] = useState('');
+
+	const startService = async (): Promise<any> => {
+		isService.current = await esbuild.startService({
+			worker: true,
+			wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
+		});
+	};
+
+	const handleCodeSubmit = async (): Promise<any> => {
 		setInput('');
 
-		if (!service.current) return;
+		if (!isService.current) return;
 
-		iframe.current.srcdoc = html;
-
-		const res = await service.current.build({
+		const res = await isService.current.build({
 			entryPoints: ['index.js'],
 			bundle: true,
 			write: false,
@@ -28,40 +35,12 @@ const App = () => {
 				global: 'window',
 			},
 		});
-
-		iframe.current.contentWindow.postMessage(res.outputFiles[0].text, '*');
-	};
-
-	const startService = async (): Promise<any> => {
-		service.current = await esbuild.startService({
-			worker: true,
-			wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
-		});
+		setUserCode(res.outputFiles[0].text);
 	};
 
 	useEffect(() => {
 		startService();
 	}, []);
-
-	const html = `
-		<html>
-			<head></head>
-			<body>
-				<div id="root"></div>
-				<script>
-					window.addEventListener('message', e => {
-						try {
-							eval(e.data);
-						} catch (err) {
-							const root = document.querySelector('#root');
-							root.innerHTML = '<div style="color: red"><h4>Runtime Error:</h4>' + err + '</div>'
-							console.err(err);s
-						}
-					},false)
-				</script>
-			</body>
-		</html>
-	`;
 
 	return (
 		<div>
@@ -69,19 +48,10 @@ const App = () => {
 				initValue="//your code here"
 				onChange={(value) => setInput(value)}
 			/>
-			<textarea
-				value={input}
-				onChange={(e) => setInput(e.target.value)}
-			></textarea>
 			<div>
-				<button onClick={handleClick}>Submit</button>
+				<button onClick={handleCodeSubmit}>Submit</button>
 			</div>
-			<iframe
-				title="preview"
-				ref={iframe}
-				sandbox="allow-scripts"
-				srcDoc={html}
-			/>
+			<Preview userCode={userCode} />
 		</div>
 	);
 };
