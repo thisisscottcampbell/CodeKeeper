@@ -46,7 +46,14 @@ const App = () => {
 			<body>
 				<div id="root"></div>
 				<script>
-					window.addEventListener('message', e => eval(e.data),false)
+					window.addEventListener('message', e => {
+						try {
+							eval(e.data);
+						} catch (err) {
+							const root = document.querySelector('#root');
+							root.innerHTML = '<div>' + err + '</div>'
+						}
+					},false)
 				</script>
 			</body>
 		</html>
