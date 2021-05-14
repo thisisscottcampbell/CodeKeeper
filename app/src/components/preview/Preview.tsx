@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import './styles.css';
 
 interface PreviewProps {
-	displayCode: string;
+	code: string;
 }
 
 const html = `
@@ -25,13 +25,13 @@ const html = `
 </html>
 `;
 
-const Preview: React.FC<PreviewProps> = ({ displayCode }) => {
+const Preview: React.FC<PreviewProps> = ({ code }) => {
 	const iframe = useRef<any>(null);
 
 	useEffect(() => {
 		iframe.current.srcdoc = html;
-		iframe.current.contentWindow.postMessage(displayCode, '*');
-	}, [displayCode]);
+		iframe.current.contentWindow.postMessage(code, '*');
+	}, [code]);
 
 	return (
 		<div className="iframe-wrapper">

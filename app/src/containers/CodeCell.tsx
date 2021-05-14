@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Preview from '../components/preview/Preview';
 import CodeEditor from '../components/code_editor/CodeEditor';
 import { bundler } from '../bundler/bundler';
 import Resizable from '../components/resizable/Resizable';
 
 const CodeCell = () => {
-	const [inputCode, setInputCode] = useState('');
-	const [displayCode, setDisplayCode] = useState('');
+	const [code, setCode] = useState('');
+	const [input, setInput] = useState('');
 
-	const handleCodeSubmit = async (): Promise<any> => {
-		const bundledCode = await bundler(inputCode);
-		setDisplayCode(bundledCode);
-		setInputCode('');
-	};
+	useEffect(() => {
+		const timer = setTimeout(async () => {
+			const output = await bundler(input);
+			setCode(output);
+		}, 1000);
+		return () => clearTimeout(timer);
+	}, [input]);
 
 	return (
 		<Resizable direction="vertical">
@@ -20,10 +22,10 @@ const CodeCell = () => {
 				<Resizable direction="horizontal">
 					<CodeEditor
 						initValue="//your code here"
-						onChange={(value) => setInputCode(value)}
+						onChange={(value) => setInput(value)}
 					/>
 				</Resizable>
-				<Preview displayCode={displayCode} />
+				<Preview code={code} />
 			</div>
 		</Resizable>
 	);
