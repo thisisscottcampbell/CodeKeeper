@@ -10,14 +10,21 @@ const html = `
   <head></head>
   <body>
     <div id="root"></div>
-    <script>
+		<script>
+			const handleError = err => {
+				const root = document.querySelector('#root');
+          root.innerHTML = '<div style="color: red"><h4>Runtime Error:</h4>' + err + '</div>'
+          console.err(err);s
+			}
+			window.addEventListener('error', e => {
+				handleError(e.error)
+			})
+
       window.addEventListener('message', e => {
         try {
           eval(e.data);
         } catch (err) {
-          const root = document.querySelector('#root');
-          root.innerHTML = '<div style="color: red"><h4>Runtime Error:</h4>' + err + '</div>'
-          console.err(err);s
+          handleError(err)
         }
       },false)
     </script>
