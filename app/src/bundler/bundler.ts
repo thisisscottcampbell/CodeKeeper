@@ -10,16 +10,19 @@ export const bundler = async (userInput: string) => {
 			worker: true,
 			wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
 		});
-
-	const res = await service.build({
-		entryPoints: ['index.js'],
-		bundle: true,
-		write: false,
-		plugins: [unpkgPathPlugin(), fetchPlugin(userInput)],
-		define: {
-			'process.env.NODE_ENV': '"production"',
-			global: 'window',
-		},
-	});
-	return res.outputFiles[0].text;
+	try {
+		const res = await service.build({
+			entryPoints: ['index.js'],
+			bundle: true,
+			write: false,
+			plugins: [unpkgPathPlugin(), fetchPlugin(userInput)],
+			define: {
+				'process.env.NODE_ENV': '"production"',
+				global: 'window',
+			},
+		});
+		return { code: res.outputFiles[0].text, error: '' };
+	} catch (err) {
+		return { code: '', error: err.message };
+	}
 };
