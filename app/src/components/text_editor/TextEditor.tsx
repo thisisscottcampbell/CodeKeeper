@@ -5,6 +5,7 @@ import './styles.css';
 const TextEditor: React.FC = () => {
 	const ref = useRef<HTMLDivElement | null>(null);
 	const [editing, setEditing] = useState(false);
+	const [value, setValue] = useState('# Header');
 
 	useEffect(() => {
 		const listener = (e: MouseEvent) => {
@@ -19,11 +20,13 @@ const TextEditor: React.FC = () => {
 
 	return editing ? (
 		<div className="text-editor" ref={ref}>
-			<MDEditor />
+			<MDEditor value={value} onChange={(val) => setValue(val || '')} />
 		</div>
 	) : (
-		<div className="text-editor" onClick={() => setEditing(true)}>
-			<MDEditor.Markdown source={'# Header'} />
+		<div className="text-editor card" onClick={() => setEditing(true)}>
+			<div className="card-content">
+				<MDEditor.Markdown source={value} />
+			</div>
 		</div>
 	);
 };
