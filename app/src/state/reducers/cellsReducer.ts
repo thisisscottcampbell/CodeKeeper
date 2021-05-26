@@ -1,5 +1,5 @@
-import { ActionType } from '../action-types',
-import { Action } from '../actions';
+import { sType } from '../s-types',
+import { Actions } from '../actions';
 import { Cell } from '../cell';
 
 interface CellState {
@@ -18,15 +18,15 @@ const initialState: CellState = {
   data: {}
 }
 
-const reducer = (state: CellState = initialState, action: Action): CellState => {
+const reducer = (state: CellState = initialState, action: Actions): CellState => {
   switch (action.type) {
-    case ActionType.UPDATE_CELL:
+    case sType.UPDATE_CELL:
       return state;
-    case ActionType.DELETE_CELL:
+    case sType.DELETE_CELL:
       return state;
-    case ActionType.MOVE_CELL:
+    case sType.MOVE_CELL:
       return state;
-    case ActionType.INSERT_CELL_BEFORE:
+    case sType.INSERT_CELL_BEFORE:
       return state;
     default:
       return state;
