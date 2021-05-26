@@ -1,14 +1,16 @@
 import React from 'react';
-//import CodeCell from '../containers/CodeCell';
+import { Provider } from 'react-redux';
+import { store } from '../state';
 import TextEditor from '../components/text_editor/TextEditor';
 import 'bulmaswatch/superhero/bulmaswatch.min.css';
 
 const App = () => {
 	return (
-		<div>
-			<TextEditor />
-			{/* <CodeCell /> */}
-		</div>
+		<Provider store={store}>
+			<div>
+				<TextEditor />
+			</div>
+		</Provider>
 	);
 };
 
